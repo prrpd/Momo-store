@@ -46,6 +46,8 @@ release:
 # Test job
 test:
   stage: test
+  image:
+    name: debian:bullseye-slim
   script:
     - go run ./cmd/api
     - go test -v ./...
