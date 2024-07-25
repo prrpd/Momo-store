@@ -47,6 +47,7 @@ release:
 test:
   stage: test
   script:
+    - go run ./cmd/api
     - go test -v ./...
 # sonarqube-backend-sast:
 #   stage: test
