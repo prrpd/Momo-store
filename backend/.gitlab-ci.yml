@@ -51,7 +51,7 @@ test:
     name: $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA
   script:
     - ls
-    - ls /backend/cmd/api
+    - ls /backend
     - go run ./backend/cmd/api
     - go test -v ./...
 # sonarqube-backend-sast:
