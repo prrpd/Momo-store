@@ -47,7 +47,7 @@ release:
 test:
   stage: test
   image:
-    name: golang:alpine3.20
+    name: $CI_REGISTRY_IMAGE/momo-backend:$VERSION
   script:
     - go run ./backend/cmd/api
     - go test -v ./...
