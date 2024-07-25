@@ -49,8 +49,7 @@ test:
   image:
     name: debian:bullseye-slim
   script:
-    - ls -la
-    - go run ./cmd/api
+    - go run ./backend/cmd/api
     - go test -v ./...
 # sonarqube-backend-sast:
 #   stage: test
