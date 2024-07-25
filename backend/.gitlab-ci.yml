@@ -48,7 +48,7 @@ release:
 test:
   stage: test
   image:
-    name: $CI_REGISTRY_IMAGE/$COMPONENT:$VERSION
+    name: $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA
   script:
     - go run ./backend/cmd/api
     - go test -v ./...
