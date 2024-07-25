@@ -1,4 +1,4 @@
-FROM mirror.gcr.io/golang:bullseye as builder
+FROM mirror.gcr.io/golang:alpine3.20 as builder
 ARG VERSION=${VERSION}
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -8,7 +8,7 @@ COPY ./internal ./internal
 RUN go build -o momo ./cmd/api
 
 # шаг релиза
-FROM mirror.gcr.io/debian:bullseye-slim
+FROM mirror.gcr.io/golang:alpine3.20
 ARG VERSION=${VERSION}
 WORKDIR /app
 COPY --from=builder /app/momo .

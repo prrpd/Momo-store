@@ -47,7 +47,7 @@ release:
 test:
   stage: test
   image:
-    name: debian:bullseye-slim
+    name: golang:alpine3.20
   script:
     - go run ./backend/cmd/api
     - go test -v ./...
