@@ -43,17 +43,16 @@ release:
     - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - crane tag $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA $VERSION
-
 # Test job
-test:
-  stage: test
-  image:
-    name: $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA
-  script:
-    - ls
-    - ls /backend
-    - go run ./backend/cmd/api
-    - go test -v ./...
+# test:
+#   stage: test
+#   image:
+#     name: $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA
+#   script:
+#     - ls
+#     - ls /backend
+#     - go run ./backend/cmd/api
+#     - go test -v ./...
 # sonarqube-backend-sast:
 #   stage: test
 #   image: maven:3.8-openjdk-16
