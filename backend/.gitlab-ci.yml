@@ -13,8 +13,6 @@ stages:
   - build
   - test
   - release
-  - deploy
-  - notify
 
 build:
   stage: build
@@ -43,16 +41,21 @@ release:
     - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - crane tag $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA $VERSION
-# Test job
-# test:
-#   stage: test
-#   image:
-#     name: $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA
-#   script:
-#     - ls
-#     - ls /backend
-#     - go run ./backend/cmd/api
-#     - go test -v ./...
+
+sonarqube-scan:
+  stage: test
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+  script:
+    - >
+      sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT 
+      -Dsonar.sources=./backend 
+      -Dsonar.host.url=$SONARQUBE_URL 
+      -Dsonar.token=$SONAR_TOKEN_FRONT
+  allow_failure: true
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
 # sonarqube-backend-sast:
 #   stage: test
 #   image: maven:3.8-openjdk-16
