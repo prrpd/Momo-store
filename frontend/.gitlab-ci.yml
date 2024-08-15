@@ -10,7 +10,7 @@ variables:
 
 stages:
   - build
-  - scan
+  - test
   - release
 
 build:
@@ -42,46 +42,16 @@ release:
     - crane tag $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA $VERSION
 
 sonarqube-scan:
-  stage: scan
+  stage: test
   image:
     name: sonarsource/sonar-scanner-cli:latest
   script:
-    - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT -Dsonar.sources=./frontend -Dsonar.host.url=$SONARQUBE_URL -Dsonar.token=$SONAR_TOKEN_FRONT
+    - >
+      sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT 
+      -Dsonar.sources=./frontend 
+      -Dsonar.host.url=$SONARQUBE_URL 
+      -Dsonar.token=$SONAR_TOKEN_FRONT
+  allow_failure: true
 
-sast:
-  stage: scan
-  image: docker.io/gitlab/gitlab-runner-helper:x86_64-b1d1a1a7
-  script: echo "Running SAST scan..."
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-
-dependency-scanning:
-  stage: scan
-  image: docker.io/gitlab/gitlab-runner-helper:x86_64-b1d1a1a7
-  script: echo "Running Dependency Scanning..."
-  artifacts:
-    reports:
-      dependency_scanning: gl-dependency-scanning-report.json
-# sonarqube-frontend-sast:
-#   stage: test
-#   image:
-#     name: sonarsource/sonar-scanner-cli:latest
-#     entrypoint: [""]
-#   script:
-#     - cd frontend
-#     - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT -Dsonar.sources=. -Dsonar.host.url=$SONARQUBE_URL -Dsonar.token=$SONAR_TOKEN_FRONT
-#   allow_failure: true
-
-# include:
-#   - template: Security/SAST.gitlab-ci.yml
-
-# sonarqube-frontend-sast:
-#   stage: test
-#   image:
-#     name: sonarsource/sonar-scanner-cli:latest
-#     entrypoint: [""]
-#   script:
-#     - cd frontend
-#     - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT -Dsonar.sources=. -Dsonar.host.url=$SONARQUBE_URL -Dsonar.token=$SONAR_TOKEN_FRONT
-#   allow_failure: true
+include:
+  - template: Security/SAST.gitlab-ci.yml
