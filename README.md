@@ -51,7 +51,7 @@ ArgoCD автоматически загружает последние верс
 
 Данные метрики можно просматривать в **Grafana** через созданные графики. Также доступны графики, отображающие работу всего кластера и контейнеров приложения.
 
-![Метрики приложения](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/deployed%20app%20metrics.png)
+![](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/deployed%20app%20metrics.png)
 
 
 
