@@ -10,10 +10,8 @@ variables:
 
 stages:
   - build
-  - test
+  - scan
   - release
-  - deploy
-  - notify
 
 build:
   stage: build
@@ -42,28 +40,29 @@ release:
     - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - crane tag $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA $VERSION
-# deploy-frontend:
-#   stage: deploy
-#   image: mirror.gcr.io/docker:25.0.5-alpine3.20
-#   before_script:
-#     - apk add openssh-client bash gettext
-#     - eval $(ssh-agent -s)
-#     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#     - mkdir -p ~/.ssh
-#     - chmod 600 ~/.ssh
-#     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#     - chmod 644 ~/.ssh/known_hosts
-#     - docker context create remote --docker "host=ssh://${DEV_USER}@${DEV_HOST}"
-#   script:
-#     - echo VERSION=$VERSION >> deploy.env
-#     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-#     - docker --context remote compose --env-file deploy.env up frontend -d --pull "always" --force-recreate
-#   environment:
-#     name: test/frontend
-#     url: http://std-027-58.praktikum-services.tech/
-#   # rules:
-#   #   - when: manual
 
+sonarqube-scan:
+  stage: scan
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT -Dsonar.sources=./frontend -Dsonar.host.url=$SONARQUBE_URL -Dsonar.token=$SONAR_TOKEN_FRONT
+
+sast:
+  stage: scan
+  image: docker.io/gitlab/gitlab-runner-helper:x86_64-b1d1a1a7
+  script: echo "Running SAST scan..."
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+
+dependency-scanning:
+  stage: scan
+  image: docker.io/gitlab/gitlab-runner-helper:x86_64-b1d1a1a7
+  script: echo "Running Dependency Scanning..."
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
 # sonarqube-frontend-sast:
 #   stage: test
 #   image:
