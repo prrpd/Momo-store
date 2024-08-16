@@ -55,15 +55,10 @@ ArgoCD автоматически загружает последние верс
 ![Метрики приложения](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/deployed%20app%20metrics.png)
 
 
-
-<img width="900" alt="image2" src="https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/deployed%20app%20metrics.png"/>
-
+![Метрики ingress контроллера](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/nginx%20ingress%20controller.png)
 
 
-<img width="900" alt="image" src="https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/nginx%20ingress%20controller.jpg">
-<img width="900" alt="image" src="https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/pod.jpg">
-![Метрики ingress контроллера](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/nginx%20ingress%20controller.jpg)
-![Метрики пода](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/pod.jpg)
+![Метрики пода](https://gitlab.praktikum-services.ru/std-027-58/infra-momo/-/blob/diplom/monitoring/pod.png)
 
 ## Заключение
 
