@@ -61,6 +61,7 @@ unit_test:
   stage: test
   image: mirror.gcr.io/golang:alpine3.20
   script:
+    - cd backend
     - ls
     - pwd
     - go mod download
