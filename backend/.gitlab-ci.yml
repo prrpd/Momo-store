@@ -12,7 +12,6 @@ variables:
 stages:
   - build
   - test
-  - unit_test
   - release
 
 build:
@@ -58,13 +57,23 @@ sonarqube-scan:
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-unit_test:
+# unit_test:
+#   stage: test
+#   image: mirror.gcr.io/golang:alpine3.20
+#   script:
+#     - go mod download
+#     - go test -v ./...
+#   # Optional: collect test results
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: report.xml
+
+golang:
   stage: test
-  image: mirror.gcr.io/golang:alpine3.20
   script:
-    - go mod download
-    - go test -v ./...
-  # Optional: collect test results
+    - go install gotest.tools/gotestsum@latest
+    - gotestsum --junitfile report.xml --format testname
   artifacts:
     when: always
     reports:
