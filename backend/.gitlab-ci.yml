@@ -57,7 +57,7 @@ sonarqube-scan:
 include:
   - template: Security/SAST.gitlab-ci.yml
 
-unit_test:
+unit-test:
   stage: test
   image: mirror.gcr.io/golang:alpine3.20
   script:
