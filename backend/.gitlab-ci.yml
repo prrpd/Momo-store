@@ -1,0 +1,70 @@
+---
+cache:
+  paths:
+    - ${CI_PROJECT_DIR}/.cache
+
+variables:
+  FF_TIMESTAMPS: 1 # для того, чтобы в логах отображалось время события (timestamp)
+  VERSION: 1.0.${CI_PIPELINE_ID}
+  SAST_EXCLUDED_ANALYZERS: "eslint,nodejs-scan-sast"
+  COMPONENT: momo-backend
+
+stages:
+  - build
+  - test
+  - release
+
+build:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    entrypoint: [""]
+  # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо
+  script:
+    - echo "test"
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}/backend"
+      --dockerfile "${CI_PROJECT_DIR}/backend/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/$COMPONENT:$CI_COMMIT_SHA"
+      --build-arg VERSION=$VERSION
+      --cache=true
+
+release:
+  stage: release
+  variables:
+    GIT_STRATEGY: none
+  image:
+    name: gcr.io/go-containerregistry/crane:debug
+    entrypoint: [""]
+  cache: []
+  before_script:
+    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - crane tag $CI_REGISTRY_IMAGE/$COMPONENT:$CI_COMMIT_SHA $VERSION
+
+sonarqube-scan:
+  stage: test
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+  script:
+    - >
+      sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY_FRONT 
+      -Dsonar.sources=./backend 
+      -Dsonar.host.url=$SONARQUBE_URL 
+      -Dsonar.token=$SONAR_TOKEN_FRONT
+  allow_failure: true
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
+unit-test:
+  stage: test
+  image: mirror.gcr.io/golang:alpine3.20
+  script:
+    - cd backend
+    - go mod download
+    - go test -v ./...
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
